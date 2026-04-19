@@ -1,46 +1,30 @@
 import os
-import json
 from openai import OpenAI
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-def call_llm(action, message, history, signals):
-    prompt = f"""
-You are an execution decision engine.
+def call_llm(prompt, model="gpt-4o-mini", max_retries=3, timeout=10):
+    for attempt in range(max_retries):
+        try:
+            response = client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system", "content": "You output valid JSON only."},
+                    {"role": "user", "content": prompt}
+                ],
+                temperature=0,
+                timeout=timeout
+            )
 
-Action: {action}
-User message: {message}
-History: {history}
-Signals: {signals}
+            content = response.choices[0].message.content
 
-Decide one:
-EXECUTE_SILENTLY
-EXECUTE_AND_NOTIFY
-CONFIRM_BEFORE
-ASK_CLARIFICATION
-REFUSE
+            if not content:
+                raise ValueError("Empty response from LLM")
 
-Return JSON:
-{{
-  "decision": "...",
-  "rationale": "...",
-  "confidence": 0-1
-}}
-"""
+            return content
 
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0
-        )
+        except Exception as e:
+            print(f"[LLM ERROR] Attempt {attempt+1}: {e}")
 
-        content = response.choices[0].message.content
-        return json.loads(content)
-
-    except Exception as e:
-        return {
-            "decision": "CONFIRM_BEFORE",
-            "rationale": f"LLM failure: {str(e)}",
-            "confidence": 0
-        }
+            if attempt == max_retries - 1:
+                return None 

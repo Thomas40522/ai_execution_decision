@@ -1,18 +1,18 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from decision import decide_execution
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/decide", methods=["POST"])
 def decide():
     data = request.json
 
-    action = data.get("action", "")
     message = data.get("message", "")
-    history = data.get("history", [])
-    user_state = data.get("user_state", {})
-
-    result = decide_execution(action, message, history, user_state)
+    context = data.get("context", [])
+    
+    result = decide_execution(message, context)
 
     return jsonify(result)
 
