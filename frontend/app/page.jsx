@@ -4,7 +4,7 @@ import { useState } from "react";
 import { scenarios } from "../data/scenarios";
 import { PipelinePanel } from "../components/PipelineView"
 
-const backendApi = env.NEXT_PUBLIC_BACKEND_API || "http://localhost:5000"
+const backendApi = process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:5000"
 
 export default function Home() {
   const [selectedScenario, setSelectedScenario] = useState(0);
