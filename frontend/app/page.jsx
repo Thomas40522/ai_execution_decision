@@ -4,11 +4,9 @@ import { useState } from "react";
 import { scenarios } from "../data/scenarios";
 import { PipelinePanel } from "../components/PipelineView"
 
+const backendApi = env.NEXT_PUBLIC_BACKEND_API || "http://localhost:5000"
 
 export default function Home() {
-  const [backendApi, setBackendApi] = useState(
-    process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:5000"
-  );
   const [selectedScenario, setSelectedScenario] = useState(0);
   const [messages, setMessages] = useState(scenarios[0].messages);
   const [context, setContext] = useState(scenarios[0].context);
@@ -168,36 +166,6 @@ export default function Home() {
 
       {/* RIGHT */}
       <div style={{ width: "50%", padding: 20, overflowY: "auto" }}>
-        <div style={{
-          marginBottom: 16,
-          padding: 12,
-          background: "#fafafa",
-          border: "1px solid #eee",
-          borderRadius: 10
-        }}>
-          <label style={{
-            display: "block",
-            fontSize: 12,
-            color: "#666",
-            marginBottom: 6
-          }}>
-            Backend API
-          </label>
-
-          <input
-            value={backendApi}
-            onChange={(e) => setBackendApi(e.target.value)}
-            placeholder="http://localhost:5000"
-            style={{
-              width: "100%",
-              padding: "10px 12px",
-              fontSize: 14,
-              borderRadius: 8,
-              border: "1px solid #ccc",
-              outline: "none"
-            }}
-          />
-        </div>
         <PipelinePanel
           input={input}
           context={context}
