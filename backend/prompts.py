@@ -125,12 +125,7 @@ RULES:
 def build_stage3_prompt(context, intent, decision, scores):
     return f"""
 You are an AI assistant responding to a user.
-
-Context:
-{context}
-
-Intent:
-{intent}
+Task: Generate a concise, natural response.
 
 Decision:
 {decision}
@@ -138,9 +133,13 @@ Decision:
 Issue scores:
 {scores}
 
-Generate a concise, natural response.
+Intent:
+{intent}
 
-Guidelines:
+Context:
+{context}
+
+Instruction:
 - If ASK_CLARIFICATION → ask a clear question
 - If CONFIRM_BEFORE → ask for confirmation
 - If EXECUTE_AND_NOTIFY → confirm completion
